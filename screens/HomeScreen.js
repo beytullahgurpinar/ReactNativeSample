@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Platform,
+    Text,
     ScrollView,
     StyleSheet,
     TouchableHighlight,
@@ -10,8 +10,10 @@ import {
 import axios from 'axios';
 import {Button, List, ListItem} from 'react-native-elements'
 import {Actions, Scene, Router} from 'react-native-router-flux';
+import {Icon} from 'react-native-elements'
 
 import {RkButton} from 'react-native-ui-kitten';
+import TouchableItem from "react-navigation/src/views/TouchableItem";
 
 
 export default class HomeScreen extends React.Component {
@@ -38,25 +40,31 @@ export default class HomeScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <RkButton rkType='success' style={{width: '100%',marginBottom:4}} onPress={() => Actions.GoldScreen()}>Altın</RkButton>
-                <RkButton rkType='info' style={{width: '100%',marginBottom:4}} onPress={() => Actions.CreditScreen()}>Kredi</RkButton>
-                <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+
+                <ScrollView  contentContainerStyle={styles.contentContainer}>
 
                     {
                         this.state.currencies.map((l, i) => (
                             <TouchableHighlight onPress={() => this._onPressButton(l.code)}>
                                 <ListItem
+                                    style={{...styles.itemList}}
                                     roundAvatar
                                     key={i}
                                     title={l.name}
-                                    avatar={{uri: l.icon}}
-                                    subtitle={l.sales}
+                                    leftAvatar={{ source: { uri: l.icon } }}
+                                    rightTitle={l.sales}
                                 />
                             </TouchableHighlight>
                         ))
                     }
 
                 </ScrollView>
+                <View style={{flex: 1, flexDirection: 'row', position: 'absolute', left: 0, right: 0, bottom: -3}}>
+                    <TouchableItem style={{...styles.footerTab ,...styles.activeTab}} ><Icon name='attach-money'/><Text>Döviz</Text></TouchableItem>
+                    <TouchableItem style={styles.footerTab} onPress={() => Actions.GoldScreen()}><Icon name='attach-money'/><Text>Altın</Text></TouchableItem>
+                    <TouchableItem style={styles.footerTab} onPress={() => Actions.CreditScreen()}><Icon name='attach-money'/><Text>Kredi</Text></TouchableItem>
+                    <TouchableItem style={styles.footerTab} onPress={() => Actions.CreditScreen()}><Icon name='attach-money'/><Text>Ayarlar</Text></TouchableItem>
+                </View>
             </View>
         );
     }
@@ -67,5 +75,24 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+        paddingBottom: 73
     },
+    footerTab: {
+        width: '25%',
+        marginBottom: 4, alignItems: 'center',
+        paddingBottom: 15,
+        paddingTop: 15,
+        borderRightWidth: 1,
+        borderStyle: 'solid', borderColor: '#ddd',
+        borderTopWidth: 1
+    },
+    activeTab: {
+        backgroundColor: '#6699cc',
+        color: '#fff'
+    },
+    itemList : {
+        borderBottomWidth: 0.7,
+        borderStyle: 'solid',
+        borderColor: '#ddd'
+    }
 });

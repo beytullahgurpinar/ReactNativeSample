@@ -1,32 +1,36 @@
 import React from 'react';
-import {ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {
+    Platform,
+    ScrollView,
+    StyleSheet, Text,
+    TouchableHighlight,
+    View,
+} from 'react-native';
 
 import axios from 'axios';
-import {Icon, ListItem} from "react-native-elements";
-import {Actions} from "react-native-router-flux";
+import {Icon, ListItem} from 'react-native-elements'
 import TouchableItem from "react-navigation/src/views/TouchableItem";
+import {Actions} from "react-native-router-flux";
 
-export default class GoldScreen extends React.Component {
-
-    static navigationOptions = {
-        title: 'Altın Fiyatları',
-    };
+export default class GoldDetailScreen extends React.Component {
 
     state = {
-        gold: []
-    }
-
-    _onPressButton = (code) => {
-        Actions.GoldDetailScreen({code: code});
+        'code': this.props.code,
+        currencies: []
     }
 
     componentDidMount() {
-        axios.get('https://currency.digitistanbul.com/gold')
+        axios.get('https://currency.digitistanbul.com/gold/' + this.props.code + '/')
             .then(res => {
-                const gold = res.data.collection;
-                this.setState({gold});
+                const currencies = res.data.collection;
+                this.setState({currencies});
             })
     }
+
+    static navigationOptions = {
+        title: 'Altın Fiyatı'
+    };
+
 
     render() {
         return (
@@ -34,8 +38,8 @@ export default class GoldScreen extends React.Component {
                 <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
 
                     {
-                        this.state.gold.map((l, i) => (
-                            <TouchableHighlight onPress={() => this._onPressButton(l.code)}>
+                        this.state.currencies.map((l, i) => (
+                            <TouchableHighlight>
                                 <ListItem
                                     style={{...styles.itemList}}
                                     roundAvatar
@@ -51,20 +55,21 @@ export default class GoldScreen extends React.Component {
                 </ScrollView>
                 <View style={{flex: 1, flexDirection: 'row', position: 'absolute', left: 0, right: 0, bottom: -3}}>
                     <TouchableItem style={styles.footerTab} onPress={() => Actions.HomeScreen()}><Icon name='attach-money'/><Text>Döviz</Text></TouchableItem>
-                    <TouchableItem style={{...styles.footerTab ,...styles.activeTab}} onPress={() => Actions.GoldScreen()}><Icon name='attach-money'/><Text>Altın</Text></TouchableItem>
+                    <TouchableItem style={styles.footerTab} onPress={() => Actions.GoldScreen()}><Icon name='attach-money'/><Text>Altın</Text></TouchableItem>
                     <TouchableItem style={styles.footerTab} onPress={() => Actions.CreditScreen()}><Icon name='attach-money'/><Text>Kredi</Text></TouchableItem>
                     <TouchableItem style={styles.footerTab} onPress={() => Actions.CreditScreen()}><Icon name='attach-money'/><Text>Ayarlar</Text></TouchableItem>
                 </View>
             </View>
-
         );
     }
+
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+        paddingBottom: 73
     },
     footerTab: {
         width: '25%',
@@ -73,11 +78,8 @@ const styles = StyleSheet.create({
         paddingTop: 15,
         borderRightWidth: 1,
         borderStyle: 'solid', borderColor: '#ddd',
-        borderTopWidth: 1
-    },
-    activeTab: {
-        backgroundColor: '#6699cc',
-        color: '#fff'
+        borderTopWidth: 1,
+        backgroundColor: 'white'
     },
     itemList : {
         borderBottomWidth: 1,
