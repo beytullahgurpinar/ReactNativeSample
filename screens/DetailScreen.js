@@ -15,38 +15,56 @@ import {Actions} from "react-native-router-flux";
 export default class DetailScreen extends React.Component {
 
     state = {
-        'code': this.props.code,
-        currencies: []
+        code: this.props.item.code,
+        currencies: [],
+        comments: [],
     }
+
+    static navigationOptions = ({navigation}) => ({
+        title: navigation.state.params.item.name + ' Yorumları'
+    })
 
     componentDidMount() {
-        axios.get('https://currency.digitistanbul.com/' + this.props.code + '/')
-            .then(res => {
-                const currencies = res.data.collection;
-                this.setState({currencies});
-            })
-    }
 
-    static navigationOptions = {
-        title: 'Döviz Kurları'
-    };
+
+        this.state.code = this.props.item.code;
+
+        const config = {headers: {'Content-Type': 'multipart/form-data'}};
+
+        let data = new FormData();
+
+        data.append('object_type', 'currency');
+        data.append('object_id', this.props.item.code);
+        data.append('p', 1);
+        data.append('render', 0);
+
+        axios.post('https://www.kolayfinans.com.tr/api/comments/more',
+            data, config)
+            .then(res => {
+                console.log(res.data);
+                const comments = res.data.data;
+                this.setState({comments});
+            })
+        ;
+    }
 
 
     render() {
         return (
             <View style={styles.container}>
-                <ScrollView  contentContainerStyle={styles.contentContainer}>
+                <ScrollView contentContainerStyle={styles.contentContainer}>
 
                     {
-                        this.state.currencies.map((l, i) => (
-                            <TouchableHighlight >
+                        this.state.comments.map((l, i) => (
+                            <TouchableHighlight>
                                 <ListItem
                                     style={{...styles.itemList}}
                                     roundAvatar
                                     key={i}
-                                    title={l.name}
-                                    leftAvatar={{ source: { uri: l.icon } }}
-                                    rightTitle={l.sales}
+                                    title={l.username}
+                                    leftAvatar={{source: {uri: 'https://www.gravatar.com/avatar/' + l.security + '?d=&s=400'}}}
+                                    subtitle={l.comment}
+                                    rightSubtitle={l.created_date.date}
                                 />
                             </TouchableHighlight>
                         ))
@@ -81,7 +99,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         backgroundColor: 'white'
     },
-    itemList : {
+    itemList: {
         borderBottomWidth: 1,
         borderStyle: 'solid',
         borderColor: '#ddd'

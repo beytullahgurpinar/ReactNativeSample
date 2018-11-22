@@ -25,8 +25,8 @@ export default class HomeScreen extends React.Component {
         currencies: []
     }
 
-    _onPressButton = (code) => {
-        Actions.DetailScreen({code: code});
+    _onPressButton = (item) => {
+        Actions.DetailScreen({item: item});
     }
 
     componentDidMount() {
@@ -45,7 +45,7 @@ export default class HomeScreen extends React.Component {
 
                     {
                         this.state.currencies.map((l, i) => (
-                            <TouchableHighlight onPress={() => this._onPressButton(l.code)}>
+                            <TouchableHighlight onPress={() => this._onPressButton(l)}>
                                 <ListItem
                                     style={{...styles.itemList}}
                                     roundAvatar

@@ -15,8 +15,10 @@
   "dependencies": {
     "@expo/samples": "2.1.1",
     "axios": "^0.18.0",
-    "expo": "^31.0.2",
+    "expo": "^31.0.5",
+    "moment-timezone": "^0.5.23",
     "react": "16.5.0",
+    "react-moment": "^0.8.4",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
     "react-native-elements": "^1.0.0-beta7",
     "react-native-router-flux": "^4.0.6",
